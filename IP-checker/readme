@@ -1,1 +1,57 @@
+Network administrators often need to ensure that devices on their network are online and responsive. While a simple ping script can check device reachability, intermittent connectivity issues can lead to false positives. To address this, I developed a Bash script that performs multiple ping attempts for each IP address, providing a more reliable way to determine device availability.
 
+This project is important because it helps administrators accurately identify unreachable devices, reducing the risk of misdiagnosing network issues. By automating this process, it saves time and ensures consistent results.
+
+Approach
+The solution involves reading a list of IP addresses from a file and pinging each one multiple times. If an IP address fails to respond after several attempts, it is marked as unreachable. This approach accounts for temporary network glitches, making the results more reliable.
+
+The script uses nested loops to retry pinging each IP address up to a specified number of times. It also includes a timeout for each ping attempt to avoid unnecessary delays.
+
+Development
+The script is built using Bash scripting and leverages the ping command to check device reachability. Here’s how it works:
+
+Input: A file containing a list of IP addresses.
+Retries: The script retries pinging each IP address up to a configurable number of times (RETRIES).
+Timeout: Each ping attempt has a timeout (TIMEOUT) to prevent long waits for unresponsive IPs.
+Output: The script outputs whether each IP address is reachable or has failed after multiple attempts.
+Copy
+#!/bin/bash
+
+# Path to the IP list file
+IPS="ips_pathFile"
+
+# Number of retry attempts
+RETRIES=3
+
+# Timeout for each ping attempt (in seconds)
+TIMEOUT=1
+
+# Loop through each IP address in the file
+for ip in $(cat $IPLIST); do
+    # Retry pinging the IP address up to RETRIES times
+    for ((i=1; i<=RETRIES; i++)); do
+        if ping -c1 -W $TIMEOUT $ip &> /dev/null; then
+            echo "$ip ping passed"
+            break
+        else
+            if [ $i -eq $RETRIES ]; then
+                echo "$ip ping failed after $RETRIES attempts"
+            fi
+        fi
+    done
+done
+Steps to Run the Script
+Create a file named ip_list.txt and add the IP addresses to check.
+Save the script as ping_retry_script.sh.
+Make the script executable using chmod +x ping_retry_script.sh.
+Run the script with ./ping_retry_script.sh.
+Challenges and Insights
+While developing this script, I learned the importance of handling intermittent connectivity issues. By adding retries and timeouts, the script became more reliable and accurate. Testing with different scenarios helped refine the logic and ensure it worked as expected.
+
+Outcome and Reflection
+The final outcome is a Bash script that:
+
+Reads a list of IP addresses from a file.
+Pings each IP address multiple times with a configurable timeout.
+Outputs a clear report indicating which IPs are reachable and which failed after multiple attempts.
+This project was a great learning experience in network diagnostics and Bash scripting. It reinforced the importance of designing tools that account for real-world complexities. Moving forward, I plan to add features like logging and parallel execution to further enhance the script’s functionality.
