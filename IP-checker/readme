@@ -14,7 +14,6 @@ Input: A file containing a list of IP addresses.
 Retries: The script retries pinging each IP address up to a configurable number of times (RETRIES).
 Timeout: Each ping attempt has a timeout (TIMEOUT) to prevent long waits for unresponsive IPs.
 Output: The script outputs whether each IP address is reachable or has failed after multiple attempts.
-Copy
 #!/bin/bash
 
 # Path to the IP list file
